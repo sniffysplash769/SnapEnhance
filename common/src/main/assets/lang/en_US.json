@@ -1373,6 +1373,11 @@
                 "bitmoji_avatar_changes": "Notify when someone changes their Bitmoji avatar",
                 "bitmoji_background_changes": "Notify when someone changes their Bitmoji background",
                 "bitmoji_scene_changes": "Notify when someone changes their Bitmoji scene"
+            },
+            "snapchat_plus":{
+                "not_subscribed": "Not Subscribed",
+                "basic": "Basic",
+                "ad_free": "Ad Free"
             }
         }
     },
