@@ -478,6 +478,10 @@
                             "home_tab": {
                                 "name": "Home Tab",
                                 "description": "Overrides the startup tab when opening Snapchat"
+                            },
+                            "simple_snapchat":{
+                                "name": "Simple Snapchat",
+                                "description": "Enables a simplified version of Snapchat"
                             }
                         }
                     },
@@ -1278,6 +1282,10 @@
                 "camera": "Camera",
                 "discover": "Discover",
                 "spotlight": "Spotlight"
+            },
+            "simple_snapchat": {
+                "always_enabled": "Always Enabled",
+                "always_disabled": "Always Disabled"
             },
             "add_friend_source_spoof": {
                 "added_by_username": "By Username",
