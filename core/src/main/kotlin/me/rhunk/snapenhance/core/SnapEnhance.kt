@@ -330,22 +330,25 @@ class SnapEnhance {
             event.canceled = true
             val feedEntries = appContext.database.getFeedEntries(Int.MAX_VALUE)
 
-            val groups = feedEntries.filter { it.friendUserId == null }.map {
+            val groups = feedEntries.filter { it.conversationType == 1 }.map {
                 MessagingGroupInfo(
                     it.key!!,
-                    it.feedDisplayName!!,
+                    it.feedDisplayName ?: "",
                     it.participantsSize
                 )
             }
 
-            val friends = feedEntries.filter { it.friendUserId != null }.map {
+            val friends = feedEntries.filter { it.conversationType == 0 }.mapNotNull {
+                val friendUserId = it.friendUserId ?: it.participants?.filter { it != appContext.database.myUserId }?.firstOrNull() ?: return@mapNotNull null
+                val friend = appContext.database.getFriendInfo(friendUserId) ?: return@mapNotNull null
+
                 MessagingFriendInfo(
-                    it.friendUserId!!,
-                    appContext.database.getConversationLinkFromUserId(it.friendUserId!!)?.clientConversationId,
-                    it.friendDisplayName,
-                    it.friendDisplayUsername!!.split("|")[1],
-                    it.bitmojiAvatarId,
-                    it.bitmojiSelfieId,
+                    friendUserId,
+                    appContext.database.getConversationLinkFromUserId(friendUserId)?.clientConversationId,
+                    friend.displayName,
+                    friend.mutableUsername ?: friend.usernameForSorting!!,
+                    friend.bitmojiAvatarId,
+                    friend.bitmojiSelfieId,
                     streaks = null
                 )
             }
@@ -379,7 +382,7 @@ class SnapEnhance {
                 return appContext.database.getFeedEntryByConversationId(uuid)?.let {
                     MessagingGroupInfo(
                         it.key!!,
-                        it.feedDisplayName!!,
+                        it.feedDisplayName ?: "",
                         it.participantsSize
                     ).toSerialized()
                 }

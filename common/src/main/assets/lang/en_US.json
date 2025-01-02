@@ -198,7 +198,8 @@
                 "search_hint": "Search",
                 "fetch_error": "Failed to fetch data",
                 "category_groups": "Groups",
-                "category_friends": "Friends"
+                "category_friends": "Friends",
+                "participants_text": "{count} participants"
             },
             "scripting_warning": {
                 "title": "Warning",
