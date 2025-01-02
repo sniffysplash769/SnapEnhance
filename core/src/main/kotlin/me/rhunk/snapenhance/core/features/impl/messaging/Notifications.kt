@@ -310,7 +310,7 @@ class Notifications : Feature("Notifications") {
         }.send()
     }
 
-    private fun onMessageReceived(data: NotificationData, notificationType: String, message: Message) {
+    private suspend fun onMessageReceived(data: NotificationData, notificationType: String, message: Message) {
         val conversationId = message.messageDescriptor?.conversationId.toString()
         val orderKey = message.orderKey ?: return
         val senderUsername by lazy {
@@ -487,16 +487,18 @@ class Notifications : Feature("Notifications") {
                 suspendCoroutine { continuation ->
                     conversationManager.fetchMessageByServerId(conversationId, serverMessageId.toLong(), onSuccess = {
                         if (it.senderId.toString() == context.database.myUserId) {
-                            param.invokeOriginal()
                             continuation.resumeWith(Result.success(Unit))
+                            param.invokeOriginal()
                             return@fetchMessageByServerId
                         }
-                        onMessageReceived(notificationData, notificationType, it)
-                        continuation.resumeWith(Result.success(Unit))
+                        context.coroutineScope.launch(coroutineDispatcher) {
+                            continuation.resumeWith(Result.success(Unit))
+                            onMessageReceived(notificationData, notificationType, it)
+                        }
                     }, onError = {
                         context.log.error("Failed to fetch message id ${serverMessageId}: $it")
-                        param.invokeOriginal()
                         continuation.resumeWith(Result.success(Unit))
+                        param.invokeOriginal()
                     })
                 }
             }
