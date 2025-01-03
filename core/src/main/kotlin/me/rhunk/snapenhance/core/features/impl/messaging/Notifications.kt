@@ -486,13 +486,12 @@ class Notifications : Feature("Notifications") {
             context.coroutineScope.launch(coroutineDispatcher) {
                 suspendCoroutine { continuation ->
                     conversationManager.fetchMessageByServerId(conversationId, serverMessageId.toLong(), onSuccess = {
+                        continuation.resumeWith(Result.success(Unit))
                         if (it.senderId.toString() == context.database.myUserId) {
-                            continuation.resumeWith(Result.success(Unit))
                             param.invokeOriginal()
                             return@fetchMessageByServerId
                         }
                         context.coroutineScope.launch(coroutineDispatcher) {
-                            continuation.resumeWith(Result.success(Unit))
                             onMessageReceived(notificationData, notificationType, it)
                         }
                     }, onError = {
