@@ -467,6 +467,8 @@ class MediaDownloader : MessagingRuleFeature("MediaDownloader", MessagingRuleTyp
             }
         }
 
+        if (!forceDownload && !shouldAutoDownload("public_stories")) return
+
         //public stories
         val author = (
                 paramMap["USER_ID"]?.let { context.database.getFriendInfo(it.toString())?.mutableUsername } // only for following users
